@@ -1,5 +1,10 @@
 const express = require("express");
-const { UserModel, validUser, validLogin } = require("../models/userModel");
+const {
+  UserModel,
+  validUser,
+  validLogin,
+  genToken,
+} = require("../models/userModel");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 
@@ -41,8 +46,9 @@ router.post("/login", async (req, res) => {
   if (!passValid) {
     return res.status(401).json({ msg: "Wrong password" });
   }
-  res.json({ msg: "OK" });
   // צחזיר הודעה שהכל בסדר ונייצר טוקן
+  let newToken = genToken(user.id);
+  res.json({ token: newToken });
 });
 
 module.exports = router;
