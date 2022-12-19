@@ -32,8 +32,16 @@ router.post("/login", async (req, res) => {
     return res.status(400).json(validBody.error.details);
   }
   // בדיקת מייל
-
+  let user = await UserModel.findOne({ email: req.body.email });
+  if (!user) {
+    return res.status(401).json({ msg: "User not found" });
+  }
   // בדיקת הסיסמה מול ההצפנה
+  let passValid = await bcrypt.compare(req.body.pass, user.pass);
+  if (!passValid) {
+    return res.status(401).json({ msg: "Wrong password" });
+  }
+  res.json({ msg: "OK" });
   // צחזיר הודעה שהכל בסדר ונייצר טוקן
 });
 
